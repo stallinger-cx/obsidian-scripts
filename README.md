@@ -1,2 +1,4 @@
+
 # obsidian-scripts
-A JavaScript utility library for advanced Obsidian DataView integration.
+
+A JavaScript utility library for advanced Obsidian DataView integration using customJS.
