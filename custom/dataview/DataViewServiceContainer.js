@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * Class representing a point.
  * @class
@@ -9,22 +11,22 @@ class DataViewServiceContainer {
 
         _dv;
         get dv() { return this._dv; }
-        _enableLogging;
-        get enableLogging() { return this._enableLogging; }
+        _enableDescriptor;
+        get enableDescriptor() { return this._enableDescriptor; }
 
-        constructor(dv, enableLogging = true) {
+        constructor(dv, enableDescriptor = true) {
             if (dv?.constructor?.name !== "DataviewInlineApi") {
                 throw new Error(`DataviewInlineApi instance must be provided!`);
             }
             this._dv = dv;
-            this._enableLogging = enableLogging;
+            this._enableDescriptor = enableDescriptor;
             this._instances = {};
         }
 
         get descriptor() {
             if (!this._instances.descriptor) {
                 // ToDo: dv wirklich an Descriptor übergeben nur wegen output??
-                this._instances.descriptor = customJS.Descriptor.create(this.dv, this.enableLogging);
+                this._instances.descriptor = customJS.Descriptor.create(this.dv, this.enableDescriptor);
             }
             return this._instances.descriptor;
         }

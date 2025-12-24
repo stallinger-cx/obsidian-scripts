@@ -7,10 +7,14 @@
 
 class FinBaseDashboard {
 
+    isDescriptorEnabled(dv) {
+        return (dv.current()?.script_describe === true);
+    }
+
     async displaySavingsPlans(dv) {
 
         // IOC container containing relevant objects
-        const container = customJS.DataViewServiceContainer.create(dv, dv.current().script_describe);
+        const container = customJS.DataViewServiceContainer.create(dv, this.isDescriptorEnabled(dv));
         // execute the following script (async) using the scriptRunner (pass the same instance of the descriptor)
         await customJS.DataViewScriptRunner.execute(container.descriptor, async () => {
             const consts = customJS.FinBaseConstants;
