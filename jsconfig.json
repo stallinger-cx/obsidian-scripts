@@ -6,8 +6,8 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
-    "**/*.js",
-    ".vscode/*.d.ts"
+    "globals.d.ts",
+    "**/*.js"
   ],
   "exclude": [
     "node_modules",
