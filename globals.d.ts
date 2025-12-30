@@ -1,32 +1,13 @@
 // @ts-check
 
 /**
- * @fileoverview FinBase-TypeDefs
+ * @fileoverview Global TypeDefs
  * @description  Global definitions for Obsidian and Dataview.
  */
 
 /**
- * DataFilter object for DataLoader
- */
-interface FilterParams {
-    /**
-     * Optional filterTags (e.g. ['#finance', '#finance/asset']).
-     * Will internally be OR'ed.
-     */
-    tags?: string[];
-
-    /**
-     * Key-value-object for filtering.
-     * - key must be a string.
-     * - value must be string or Obsidian link (object with 'path' property).
-     * e.g.: `{ relates_to: dv.current().file.link, status: 'active' }`.
-     */
-    [key: string]: any;
-}
-
-
-/**
  * Additional table columns with description
+ * ToDo: create real class!
  */
 interface TableColumns {
     /**
@@ -38,7 +19,7 @@ interface TableColumns {
 }
 
 // Dataview API
-declare const dv: any;
+declare const dv: any; // ToDo: DataviewInlineApi decl.
 // Moment.js (always available in Obsidian)
 declare const moment: any;
 // CustomJS Container
@@ -46,4 +27,4 @@ declare const customJS: {
     [key: string]: any;
 };
 // Obsidian app object (if necessary)
-declare const app: any;
+//declare const app: any;
