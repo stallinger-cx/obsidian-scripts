@@ -3,7 +3,13 @@
     "target": "ES2020",
     "module": "CommonJS",
     "checkJs": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    // --- point to node_modules ---
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./.dev/node_modules/*"]
+    }
+    // -----------------------------
   },
   "include": [
     "globals.d.ts",
@@ -11,6 +17,7 @@
   ],
   "exclude": [
     "node_modules",
-    "**/node_modules/*"
+    "**/node_modules/*",
+    ".dev/node_modules"
   ]
 }

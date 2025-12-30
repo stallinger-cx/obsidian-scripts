@@ -1,0 +1,11 @@
+# node modules (recursive)
+node_modules/
+
+# logs
+npm-debug.log
+yarn-error.log
+
+# os-trash
+.DS_Store
+Thumbs.db
+ehthumbs.db

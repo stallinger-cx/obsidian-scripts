@@ -1,0 +1,18 @@
+{
+  "name": "obsidian-scripts",
+  "version": "1.0.0",
+  "description": "Type definitions and dev environment for Obsidian scripts.",
+  "license": "ISC",
+  "author": "Michael J. Stallinger",
+  "type": "commonjs",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "update-types": "npm update obsidian-dataview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "moment": "^2.30.1",
+    "obsidian-dataview": "^0.5.68"
+  }
+}

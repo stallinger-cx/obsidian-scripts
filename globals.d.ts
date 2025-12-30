@@ -5,26 +5,32 @@
  * @description  Global definitions for Obsidian and Dataview.
  */
 
-/**
- * Additional table columns with description
- * ToDo: create real class!
- */
-interface TableColumns {
-    /**
-     * - key: column specification
-     * - value: description
-     * e.g.: `{ relates_to: 'related documents' }`.
-     */
-    [key: string]: any;
+// Imports (aliased!!)
+//  Redefining the internal name, to get the correct names globally!
+import { DataviewApi as _DataviewApi } from "obsidian-dataview";
+import * as _moment from "moment";
+
+declare global {
+
+    // JSDoc for globally visible types
+    type DataviewApi = _DataviewApi;
+    const moment: typeof _moment; // Trick: merge function with namespace
+
+    // todo: my tablecolumn-Def ... to be removed
+    interface TableColumns {
+        /**
+         * - key: column specification
+         * - value: description
+         */
+        [key: string]: any;
+    }
+
+    // global variables
+    const customJS: any;
+    const dv: DataviewApi;
+    const input: any;
+//    const app: any;
 }
 
-// Dataview API
-declare const dv: any; // ToDo: DataviewInlineApi decl.
-// Moment.js (always available in Obsidian)
-declare const moment: any;
-// CustomJS Container
-declare const customJS: {
-    [key: string]: any;
-};
-// Obsidian app object (if necessary)
-//declare const app: any;
+// Macht die Datei zum Modul
+export {};
