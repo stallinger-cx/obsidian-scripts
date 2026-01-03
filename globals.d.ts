@@ -31,6 +31,29 @@ interface _DataRendererApi {
     table(headers: string[], values?: any[][] | DataArray<any>): Promise<void>;
 }
 
+/**
+ * Defines for table column formatting
+ */
+type CellFormatter = (value: any, row?: any) => any;
+
+/**
+ * Defines a table column (v2)
+ */
+interface TableColumnConfig {
+    /**
+     * Key name or property name of the object passed to the renderer (e.g. "cost", "cost_date", ...).
+     */
+    key: string;
+    /**
+     * Column Heading (defaults to 'key' if not specified)
+     */
+    heading?: string;
+    /**
+     * Fomatter to format values.
+     */
+    formatter?: CellFormatter;
+}
+
 declare global {
 
     // JSDoc for globally visible types
@@ -38,7 +61,14 @@ declare global {
     type DataLoaderApi = _DataLoaderApi;
     type DataRendererApi = _DataRendererApi;
 
-    // todo: my tablecolumn-Def ... to be removed
+    /**
+     * Table definition type (array of column definitions)
+     */
+    type TableDefinition = TableColumnConfig[];
+
+    /**
+     * @deprecated // todo: my tablecolumn-Def ... to be replaced by TableColumnConfig
+     */
     interface TableColumns {
         /**
          * - key: column specification
@@ -47,7 +77,7 @@ declare global {
         [key: string]: any;
     }
 
-    // global variables
+    // global variables (available apis)
     const customJS: any;
     const dv: DataviewInlineApiInstance;
     const moment: typeof _moment; // Trick: merge function with namespace
