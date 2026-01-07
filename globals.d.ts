@@ -29,7 +29,10 @@ interface _DataRendererApi {
     view(viewName: string, input: any): Promise<void>;
     list(values?: any[] | DataArray<any>): Promise<void>;
     table(headers: string[], values?: any[][] | DataArray<any>): Promise<void>;
+    markdownTable(headers: string[], values?: any[][] | DataArray<any>, settings?: Partial<ExportSettings>): string;
 }
+
+// ToDo: in eigenes File?
 
 /**
  * Defines for table column formatting
