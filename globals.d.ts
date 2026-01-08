@@ -37,7 +37,7 @@ interface _DataViewRendererApi {
 /**
  * Defines for table column formatting
  */
-type CellFormatter = (value: any) => any;
+type CellFormatFunc = (value: any) => any;
 
 /**
  * Defines a table column (v2)
@@ -52,9 +52,21 @@ interface TableColumnConfig {
      */
     heading?: string;
     /**
+     * Aligns the cell content (using formatter)
+     */
+    align?: CellFormatFunc;
+    /**
+     * Disallow wrapping of cell content (using formatter)
+     */
+    noWrap?: boolean;
+    /**
+     * Minimum width of the column (e.g. "100px", "10em", "20%")
+     */
+    minWidth?: string;
+    /**
      * Fomatter to format values.
      */
-    formatter?: CellFormatter;
+    format?: CellFormatFunc;
 }
 
 declare global {
