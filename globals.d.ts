@@ -7,14 +7,14 @@
 
 // Imports (aliased!!)
 //  Redefining the internal name, to get the correct names globally!
-import { DataviewInlineApi as _DataviewInlineApi } from "obsidian-dataview";
+import { DataviewInlineApi as _DataviewInlineApi, Link as _DataViewElementLink } from "obsidian-dataview";
 import * as _moment from "moment";
 
 /**
  * DataLoader API interface (part of DataviewInlineApi)
  * @see .dev\node_modules\obsidian-dataview\lib\api\inline-api.d.ts for details
  */
-interface _DataLoaderApi {
+interface _DataViewLoaderApi {
     pages(query?: string): DataArray<any>;
 }
 
@@ -22,7 +22,7 @@ interface _DataLoaderApi {
  * DataRenderer API interface (part of DataviewInlineApi)
  * @see .dev\node_modules\obsidian-dataview\lib\api\inline-api.d.ts for details
  */
-interface _DataRendererApi {
+interface _DataViewRendererApi {
     header(level: number, text: any, options?: DomElementInfo): HTMLHeadingElement;
     paragraph(text: any, options?: DomElementInfo): HTMLParagraphElement;
     span(text: any, options?: DomElementInfo): HTMLSpanElement;
@@ -37,7 +37,7 @@ interface _DataRendererApi {
 /**
  * Defines for table column formatting
  */
-type CellFormatter = (value: any, row?: any) => any;
+type CellFormatter = (value: any) => any;
 
 /**
  * Defines a table column (v2)
@@ -60,10 +60,12 @@ interface TableColumnConfig {
 declare global {
 
     // JSDoc for globally visible types
+    //  - DataView
     type DataviewInlineApiInstance = _DataviewInlineApi;
-    type DataLoaderApi = _DataLoaderApi;
-    type DataRendererApi = _DataRendererApi;
-
+    //  - Abstract APIs (here at the moment: DataView)
+    type DataLoaderApi = _DataViewLoaderApi;
+    type DataRendererApi = _DataViewRendererApi;
+    type DataElementLink = _DataViewElementLink
     /**
      * Table definition type (array of column definitions)
      */
