@@ -5,7 +5,6 @@
     "checkJs": true,
     "allowSyntheticDefaultImports": true,
     // --- point to node_modules ---
-    "baseUrl": ".",
     "paths": {
       "*": ["./.dev/node_modules/*"]
     }

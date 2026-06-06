@@ -8,7 +8,7 @@
 // Imports (aliased!!)
 //  Redefining the internal name, to get the correct names globally!
 import { DataviewInlineApi as _DataviewInlineApi, Link as _DataViewElementLink } from "obsidian-dataview";
-import * as _moment from "moment";
+import _moment from "moment";
 
 /**
  * DataLoader API interface (part of DataviewInlineApi)

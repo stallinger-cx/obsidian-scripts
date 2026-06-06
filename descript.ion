@@ -1,0 +1,4 @@
+.dev Home of node_modules (ignore for Android-Sync)
+dataview Simple & independent dataview scripts
+lib DataView library, tries to decouple from dataview plugin
+templater Templater library

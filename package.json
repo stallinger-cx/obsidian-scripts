@@ -1,0 +1,9 @@
+{
+  "name": "obsidian-scripts-router",
+  "private": true,
+  "scripts": {
+    "list": "npm --prefix .dev list --depth=0",
+    "update": "npm --prefix .dev update",
+    "install": "npm --prefix .dev install"
+  }
+}
