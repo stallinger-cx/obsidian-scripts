@@ -15,6 +15,7 @@ import * as _moment from "moment";
  * @see .dev\node_modules\obsidian-dataview\lib\api\inline-api.d.ts for details
  */
 interface _DataViewLoaderApi {
+    page(path: string | Link): DataObject | undefined;
     pages(query?: string): DataArray<any>;
 }
 
