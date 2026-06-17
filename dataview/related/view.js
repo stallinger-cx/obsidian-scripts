@@ -20,6 +20,13 @@ const relatedPages = dv.pages(queryString)
     });
 // 2. Multi-level cascade sort: order -> status -> tags -> filename
 const sortedPages = relatedPages.array().sort((a, b) => {
+    // Aliases
+    const aliasesA = String(a.aliases || "").toLowerCase();
+    const aliasesB = String(b.aliases || "").toLowerCase();
+    if (aliasesA === "" && aliasesB !== "") return 1;
+    if (aliasesB === "" && aliasesA !== "") return -1;
+    const aliasesCompare = aliasesA.localeCompare(aliasesB);
+    if (aliasesCompare !== 0) { return aliasesCompare; }
     // Level 1: Order (Numeric, default to 0 if undefined)
     const orderA = Number(a.order) || 0;
     const orderB = Number(b.order) || 0;
