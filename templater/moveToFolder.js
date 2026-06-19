@@ -1,14 +1,10 @@
 // scripts/moveToFolder.js
-async function moveToFolder(tp, folders) {
-    const chosen = await tp.system.suggester(folders, folders, false, "Target");
+// ToDo: Race-Conditions (Umbenennung vor der Ausführung) noch verhindern: https://claude.ai/share/d69c298b-cf11-4829-ab8b-069b7cabcb23
+async function moveToFolder(tp, folders, folderTexts) {
+    if (!folderTexts) { folderTexts = folders; }
+    const chosen = await tp.system.suggester(folderTexts, folders, false, "Target");
     if (!chosen) return;
-
-    const baseName = tp.file.title;
-    let targetName = baseName;
-    while (app.vault.getAbstractFileByPath(`${chosen}/${targetName}.md`)) {
-        targetName = `${baseName}_${Date.now()}`;
-    }
-    const finalPath = `${chosen}/${targetName}`;
+    const finalPath = `${chosen}/${tp.file.title}`;
     await tp.file.move(finalPath);
     // Kurz warten bis Obsidian den Move verarbeitet hat
     await new Promise(r => setTimeout(r, 100));
