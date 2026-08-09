@@ -1,7 +1,7 @@
-module.exports = async (tp) => 
+module.exports = async (tp, raw = false) => 
 {
     const values = [
-        "",
+        null,
         "aureka",
         "stallinger-cx",
         "stallinger-dev",
@@ -16,9 +16,10 @@ module.exports = async (tp) =>
         "LiMiS",
         "StaGeD"
     ];
-    const sync = await tp.system.suggester(labels, values);
-    const nanoId = await tp.user.generateId();
-    let yaml = `id: ${nanoId}\n`;
-        yaml += `sync: ${sync}\n`;
-    return yaml;
+    const value = await tp.system.suggester(labels, values);    
+    if (!value) {
+        return raw ? null : "";
+    } else {
+        return raw ? [value] : ("\n" + [value].map(v => `  - ${v}`).join("\n"));
+    }
 };
