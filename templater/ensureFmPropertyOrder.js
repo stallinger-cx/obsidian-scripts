@@ -16,11 +16,12 @@ module.exports = (fm) =>
         "phones",
         "addresses",
         "logins",
-        "connected_to",
+        "connections",
         "domain",
         "mailserver",
         "started",
-        "status"
+        "status",
+        "redefined"
     ];
     const reordered = {};
     // Set order for known properties

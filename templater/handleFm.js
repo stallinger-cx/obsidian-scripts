@@ -1,19 +1,33 @@
-module.exports = async (tp, additions = {}) => 
+module.exports = async (tp, additions = {}, recreateDefaults = true) => 
 {
     const file = tp.config.target_file;
     const current = app.metadataCache.getFileCache(file)?.frontmatter ?? {};
     const now = tp.date.now("YYYY-MM-DD[T]HH:mm:ssZ");
+
+    const id = recreateDefaults || !current.id
+        ? await tp.user.generateId()
+        : current.id;
+    const sync = recreateDefaults || current.sync == null
+        ? await tp.user.askSyncValue(tp, true)
+        : current.sync;
+    const created = recreateDefaults || !current.created
+        ? now
+        : current.created;
+
     const structure = {
-        id: await tp.user.generateId(),
-        sync: await tp.user.askSyncValue(tp, true),
-        created: now,
+        id: id,
+        sync: sync,
+        created: created,
         updated: now,
         tags: current.tags ?? null,
         aliases: current.aliases ?? null,
-        relates_to: current.relates_to ?? "[[]]",
         organizations: current.organizations ?? "[[]]",
-        ...additions
+        "is-reference": true // if it is run through handleFm.js, it is 'redefined'
     };
+    // Append additions only, if value doesn't exist!!
+    for (const [key, value] of Object.entries(additions)) {
+        structure[key] = current[key] ?? value;
+    }
     await app.fileManager.processFrontMatter(file, fm => 
     {
         // Get current properties
