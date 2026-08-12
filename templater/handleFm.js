@@ -7,21 +7,22 @@ module.exports = async (tp, additions = {}, recreateDefaults = true) =>
     const id = recreateDefaults || !current.id
         ? await tp.user.generateId()
         : current.id;
-    const sync = recreateDefaults || current.sync == null
+    const vaults = recreateDefaults || current.vaults == null
         ? await tp.user.askSyncValue(tp, true)
-        : current.sync;
+        : current.vaults;
     const created = recreateDefaults || !current.created
         ? now
         : current.created;
 
     const structure = {
         id: id,
-        sync: sync,
+        vaults: vaults,
         created: created,
         updated: now,
         tags: current.tags ?? null,
         aliases: current.aliases ?? null,
-        organizations: current.organizations ?? "[[]]",
+        organizations: current.organizations ?? ["[[]]"],
+        containers: current.containers ?? ["[[]]"],
         "is-reference": true // if it is run through handleFm.js, it is 'redefined'
     };
     // Append additions only, if value doesn't exist!!

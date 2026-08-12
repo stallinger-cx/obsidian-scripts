@@ -6,7 +6,8 @@ module.exports = async (tp, raw = false) =>
         "stallinger-cx",
         "stallinger-dev",
         "limis",
-        "staged"
+        "staged",
+        "bmd"
     ];
     const labels = [
         "-",
@@ -14,7 +15,8 @@ module.exports = async (tp, raw = false) =>
         "Stallinger-cX",
         "Stallinger-DEV",
         "LiMiS",
-        "StaGeD"
+        "StaGeD",
+        "BMD GmbH"
     ];
     const value = await tp.system.suggester(labels, values);    
     if (!value) {

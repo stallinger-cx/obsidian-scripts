@@ -2,26 +2,27 @@ module.exports = (fm) =>
 {
     const order = [
         "id",
-        "sync",
+        "vaults",
         "created",
         "updated",
         "tags",
         "aliases",
-        "relates_to",
         "organizations",
-        "owners",
-        "usernames",
-        "paymentmethods",
+        "containers",
+        "tenants",
+        "domains",
         "emails",
         "phones",
         "addresses",
         "logins",
         "connections",
-        "domain",
-        "mailserver",
+        "owners",
+        "usernames",
+        "domains",
         "started",
         "status",
-        "redefined"
+        "finance",
+        "is-reference"
     ];
     const reordered = {};
     // Set order for known properties
