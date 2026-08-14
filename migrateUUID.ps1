@@ -4,14 +4,14 @@ ForEach-Object {
 
     $content = Get-Content $_.FullName -Raw
 
-    # Nur Dateien mit Frontmatter und sync:
+    # Nur Dateien mit Frontmatter und contexts:
     if ($content -notmatch '(?s)^---\r?\n(?<fm>.*?)\r?\n---') {
         return
     }
 
     $frontmatter = $Matches.fm
 
-    if ($frontmatter -notmatch '(?m)^sync:') {
+    if ($frontmatter -notmatch '(?m)^contexts:') {
         return
     }
 

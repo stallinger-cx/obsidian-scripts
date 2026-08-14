@@ -60,26 +60,26 @@ Get-ChildItem $vault -Recurse -Filter *.md | ForEach-Object {
             $hasId = $true
         }
 
-        if($line.StartsWith("sync:")) {
+        if($line.StartsWith("contexts:")) {
             $hasSync = $true
         }
     }
 
     #
-    # Sync bestimmen
+    # contexts bestimmen
     #
 
     $relative = $file.Substring($vault.Length).TrimStart('\')
     $parts = $relative.Split('\')
 
     if($parts.Length -le 1) {
-        $sync = ""
+        $contexts = ""
     }
     elseif($parts[0].StartsWith("_")) {
-        $sync = ""
+        $contexts = ""
     }
     else {
-        $sync = $parts[0]
+        $contexts = $parts[0]
     }
 
     $newFrontmatter = @()
@@ -89,7 +89,7 @@ Get-ChildItem $vault -Recurse -Filter *.md | ForEach-Object {
     }
 
     if(-not $hasSync) {
-        $newFrontmatter += "sync: $sync"
+        $newFrontmatter += "contexts: $contexts"
     }
 
     $newFrontmatter += $frontmatter
