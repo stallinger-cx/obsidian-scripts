@@ -105,19 +105,43 @@ const linkTarget = link => String(link ?? "")
     .replace(/\]\]$/, "")
     .split("|")[0];
 
+const recentFinanceUsage = () => {
+    const usage = new Map();
+    const record = (link, sourceFile, timestamp) => {
+        const target = linkTarget(link);
+        const file = target
+            ? app.metadataCache.getFirstLinkpathDest(target, sourceFile.path)
+            : null;
+        if (!file) return;
+        usage.set(file.path, Math.max(usage.get(file.path) ?? 0, timestamp));
+    };
+
+    for (const file of app.vault.getMarkdownFiles().filter(file => file.path.startsWith("logs/"))) {
+        const fm = app.metadataCache.getFileCache(file)?.frontmatter;
+        const timestamp = file.stat?.mtime ?? 0;
+        for (const link of asArray(fm?.for)) record(link, file, timestamp);
+        for (const side of ["debit", "credit"]) {
+            for (const posting of asArray(fm?.finance?.postings?.[side])) {
+                record(posting?.account, file, timestamp);
+            }
+        }
+    }
+    return usage;
+};
+
 const chooseFile = async (tp, title, predicate, optional = false, currentLink = null) => {
     const files = app.vault.getMarkdownFiles()
-        .filter(predicate)
-        .sort((a, b) => a.basename.localeCompare(b.basename, "de"));
+        .filter(predicate);
 
     const currentTarget = linkTarget(currentLink);
-    if (currentTarget) {
-        files.sort((a, b) => {
-            const aCurrent = a.basename === currentTarget || a.path.replace(/\.md$/, "") === currentTarget;
-            const bCurrent = b.basename === currentTarget || b.path.replace(/\.md$/, "") === currentTarget;
-            return Number(bCurrent) - Number(aCurrent);
-        });
-    }
+    const usage = recentFinanceUsage();
+    files.sort((a, b) => {
+        const aCurrent = a.basename === currentTarget || a.path.replace(/\.md$/, "") === currentTarget;
+        const bCurrent = b.basename === currentTarget || b.path.replace(/\.md$/, "") === currentTarget;
+        return Number(bCurrent) - Number(aCurrent)
+            || (usage.get(b.path) ?? 0) - (usage.get(a.path) ?? 0)
+            || a.basename.localeCompare(b.basename, "de");
+    });
 
     const labels = files.map(file => file.basename);
     const values = files.map(file => wikilink(file));
