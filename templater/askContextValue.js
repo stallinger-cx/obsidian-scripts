@@ -2,7 +2,7 @@ module.exports = async (tp, raw = false) =>
 {
     const values = [
         null,
-        "xDMZ",
+        "xdmz",
         "aureka",
         "stallinger-cx",
         "stallinger-dev",

@@ -58,7 +58,7 @@ module.exports = async (tp, additions = null, recreateDefaults = true) =>
         tags: current.tags ?? null,
         aliases: current.aliases ?? null,
         organizations: current.organizations ?? ["[[]]"],
-        containers: current.containers ?? ["[[]]"],
+        "for": current["for"] ?? ["[[]]"],
         "is-reference": true // if it is run through handleFm.js, it is 'redefined'
     };
     // Merge non-empty additions; empty placeholders only create missing properties.

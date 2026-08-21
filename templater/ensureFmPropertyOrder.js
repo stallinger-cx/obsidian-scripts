@@ -8,7 +8,7 @@ module.exports = (fm) =>
         "tags",
         "aliases",
         "organizations",
-        "containers",
+        "for",
         "tenants",
         "domains",
         "emails",
@@ -18,11 +18,13 @@ module.exports = (fm) =>
         "connections",
         "owners",
         "usernames",
-        "domains",
+        "dns",
         "started",
         "status",
+        "asset",
         "finance",
-        "is-reference"
+        "see",
+        "is-reference" // everything below this are unsorted/old/unmanaged properties
     ];
     const reordered = {};
     // Set order for known properties
