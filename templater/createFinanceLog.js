@@ -149,7 +149,7 @@ const sanitizeTitle = value => String(value ?? "")
 
 const suggestedTitle = (currentTitle, fallback) => {
     const current = sanitizeTitle(currentTitle);
-    return /^(Untitled|Unbenannt|52 - new finance transaction|53 - new stock transaction)$/i.test(current)
+    return /^(Untitled|Unbenannt|52 - new finance transaction|53 - new stock transaction|55 - new dividend)$/i.test(current)
         ? fallback
         : (current || fallback);
 };
@@ -174,6 +174,7 @@ const currentPostingAccount = (finance, side) =>
 const writeFinanceLog = async (tp, data) => {
     await tp.user.handleFm(tp, {}, false);
     const file = tp.config.target_file;
+    const relatedFile = app.metadataCache.getFirstLinkpathDest(linkTarget(data.forLink), file.path);
 
     await app.fileManager.processFrontMatter(file, fm => {
         const tags = asArray(fm.tags)
@@ -188,6 +189,19 @@ const writeFinanceLog = async (tp, data) => {
     });
 
     await tp.file.move(uniqueLogPath(data.date, data.title, file));
+
+    if (relatedFile && (data.tag === "finance/statement/order" || data.tag === "finance/statement/dividend")) {
+        for (let attempt = 0; attempt < 10; attempt += 1) {
+            const indexedFinance = app.metadataCache.getFileCache(file)?.frontmatter?.finance;
+            if (indexedFinance?.date === data.finance.date && indexedFinance?.amount === data.finance.amount) break;
+            await new Promise(resolve => window.setTimeout(resolve, 100));
+        }
+        try {
+            await tp.user.updateAssetPerformance(tp, relatedFile);
+        } catch (error) {
+            console.error(`Could not update performance for ${relatedFile.path}:`, error);
+        }
+    }
 };
 
 const createCashLog = async tp => {
@@ -330,8 +344,64 @@ const createStockLog = async tp => {
     });
 };
 
+const createDividendLog = async tp => {
+    const fm = currentFrontmatter(tp);
+    const finance = fm.finance ?? {};
+
+    const forLink = await chooseFile(
+        tp,
+        "Asset",
+        file => hasTag(file, "finance/asset"),
+        false,
+        asArray(fm.for)[0]
+    );
+    if (!forLink) return;
+
+    const amount = await promptPositiveNumber(tp, "Net amount received", finance.amount);
+    if (amount == null) return;
+
+    const date = await new DatePromptModal(app, "Dividend date", finance.date ?? tp.date.now("YYYY-MM-DD"))
+        .openAndGetValue();
+    if (!date) return;
+
+    const receivingAccount = await chooseFile(
+        tp,
+        "Which account received the dividend?",
+        file => hasTag(file, "finance/account/checking"),
+        false,
+        currentPostingAccount(finance, "debit")
+    );
+    if (!receivingAccount) return;
+
+    const counterAccount = await chooseFile(
+        tp,
+        "Counter-account (optional)",
+        file => hasTag(file, "finance/account"),
+        true,
+        currentPostingAccount(finance, "credit")
+    );
+
+    const defaultTitle = suggestedTitle(tp.file.title, `${linkTarget(forLink)} - dividend`);
+    const title = await tp.system.prompt("Log note title", defaultTitle, true);
+    if (title == null) return;
+
+    const postings = {
+        debit: [{ account: receivingAccount, amount }],
+        credit: counterAccount ? [{ account: counterAccount, amount }] : []
+    };
+
+    await writeFinanceLog(tp, {
+        tag: "finance/statement/dividend",
+        forLink,
+        date,
+        title,
+        finance: { amount, date, postings }
+    });
+};
+
 module.exports = async (tp, type) => {
     if (type === "cash") return createCashLog(tp);
     if (type === "stock") return createStockLog(tp);
+    if (type === "dividend") return createDividendLog(tp);
     throw new Error(`Unknown finance log type: ${type}`);
 };

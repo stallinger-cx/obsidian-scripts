@@ -191,4 +191,9 @@ module.exports = async (tp, typeName) => {
     });
 
     await tp.file.move(uniqueNotePath(type, name, file));
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+        if (hasTag(file, "finance/asset")) break;
+        await new Promise(resolve => window.setTimeout(resolve, 100));
+    }
+    await tp.user.updateAssetPerformance(tp, file);
 };
