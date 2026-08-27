@@ -18,8 +18,8 @@ module.exports = async (tp, property, roles = []) =>
             fm[property] = [];
         }
         fm[property].push({
-            role: finalRole,
-            target: "[[]]"
+            target: "[[]]",
+            role: finalRole
         });
         tp.user.ensureFmPropertyOrder(fm);
     });

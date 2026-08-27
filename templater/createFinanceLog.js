@@ -119,7 +119,7 @@ const recentFinanceUsage = () => {
     for (const file of app.vault.getMarkdownFiles().filter(file => file.path.startsWith("logs/"))) {
         const fm = app.metadataCache.getFileCache(file)?.frontmatter;
         const timestamp = file.stat?.mtime ?? 0;
-        for (const link of asArray(fm?.for)) record(link, file, timestamp);
+        for (const link of asArray(fm?.scopes)) record(link, file, timestamp);
         for (const side of ["debit", "credit"]) {
             for (const posting of asArray(fm?.finance?.postings?.[side])) {
                 record(posting?.account, file, timestamp);
@@ -207,7 +207,7 @@ const writeFinanceLog = async (tp, data) => {
         if (!tags.includes(data.tag)) tags.push(data.tag);
 
         fm.tags = tags;
-        fm.for = [data.forLink];
+        fm.scopes = [data.forLink];
         fm.finance = data.finance;
         tp.user.ensureFmPropertyOrder(fm);
     });
@@ -244,7 +244,7 @@ const createCashLog = async tp => {
         "Related note",
         file => file.path.startsWith("notes/"),
         false,
-        asArray(fm.for)[0]
+        asArray(fm.scopes)[0]
     );
     if (!forLink) return;
 
@@ -312,7 +312,7 @@ const createStockLog = async tp => {
         "Asset",
         file => hasTag(file, "finance/asset"),
         false,
-        asArray(fm.for)[0]
+        asArray(fm.scopes)[0]
     );
     if (!forLink) return;
 
@@ -377,7 +377,7 @@ const createDividendLog = async tp => {
         "Asset",
         file => hasTag(file, "finance/asset"),
         false,
-        asArray(fm.for)[0]
+        asArray(fm.scopes)[0]
     );
     if (!forLink) return;
 

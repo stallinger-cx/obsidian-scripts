@@ -8,7 +8,7 @@ module.exports = (fm) =>
         "tags",
         "aliases",
         "organizations",
-        "for",
+        "scopes",
         "tenants",
         "domains",
         "emails",

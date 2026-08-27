@@ -26,7 +26,7 @@ const investmentPosting = (finance, side, sourcePath) => asArray(finance?.postin
     const accountFile = resolveLink(postingAccount(posting), sourcePath);
     return accountFile && hasTag(fileFrontmatter(accountFile), "finance/account/investment");
 });
-const linksToAsset = (frontmatter, sourcePath, assetFile) => asArray(frontmatter?.for).some(link =>
+const linksToAsset = (frontmatter, sourcePath, assetFile) => asArray(frontmatter?.scopes).some(link =>
     resolveLink(link, sourcePath)?.path === assetFile.path
 );
 const eventKey = event => `${event.date}|${String(event.priority).padStart(2, "0")}|${event.file.path}`;
