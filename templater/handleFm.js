@@ -34,7 +34,7 @@ module.exports = async (tp, additions = null, recreateDefaults = true) =>
             : mergedValues;
     };
 
-    const defaultKeys = new Set(["id", "contexts", "created"]);
+    const defaultKeys = new Set(["id", "scopes", "created", "updated"]);
 
     const file = tp.config.target_file;
     const current = app.metadataCache.getFileCache(file)?.frontmatter ?? {};
@@ -43,22 +43,22 @@ module.exports = async (tp, additions = null, recreateDefaults = true) =>
     const id = recreateDefaults || !current.id
         ? await tp.user.generateId()
         : current.id;
-    const contexts = recreateDefaults || current.contexts == null
+    const scopes = recreateDefaults || current.scopes == null
         ? await tp.user.askContextValue(tp, true)
-        : current.contexts;
+        : current.scopes;
     const created = recreateDefaults || !current.created
         ? now
         : current.created;
 
     const structure = {
         id: id,
-        contexts: contexts,
+        scopes: scopes,
         created: created,
         updated: now,
         tags: current.tags ?? null,
         aliases: current.aliases ?? null,
         organizations: current.organizations ?? ["[[]]"],
-        scopes: current.scopes ?? ["[[]]"],
+        contexts: current.contexts ?? ["[[]]"],
         "is-reference": true // if it is run through handleFm.js, it is 'redefined'
     };
     // Merge non-empty additions; empty placeholders only create missing properties.

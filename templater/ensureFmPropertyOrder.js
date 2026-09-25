@@ -2,13 +2,13 @@ module.exports = (fm) =>
 {
     const order = [
         "id",
-        "contexts",
+        "scopes",
         "created",
         "updated",
         "tags",
         "aliases",
         "organizations",
-        "scopes",
+        "contexts",
         "tenants",
         "domains",
         "emails",
