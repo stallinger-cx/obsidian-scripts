@@ -90,9 +90,12 @@ const asArray = value => value == null ? [] : (Array.isArray(value) ? value : [v
 
 const normalizeTag = tag => String(tag ?? "").replace(/^#/, "");
 
+const fileFrontmatter = file =>
+    app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+
 const hasTag = (file, wanted) => {
-    const fm = app.metadataCache.getFileCache(file)?.frontmatter;
-    return asArray(fm?.tags).some(tag => {
+    const fm = fileFrontmatter(file);
+    return asArray(fm.tags).some(tag => {
         const normalized = normalizeTag(tag);
         return normalized === wanted || normalized.startsWith(`${wanted}/`);
     });
@@ -100,7 +103,7 @@ const hasTag = (file, wanted) => {
 
 const wikilink = file => `[[${file.basename}]]`;
 
-const linkTarget = link => String(link ?? "")
+const linkTarget = link => String(link?.path ?? link ?? "")
     .replace(/^\[\[/, "")
     .replace(/\]\]$/, "")
     .split("|")[0];
@@ -117,7 +120,7 @@ const recentFinanceUsage = () => {
     };
 
     for (const file of app.vault.getMarkdownFiles().filter(file => file.path.startsWith("logs/"))) {
-        const fm = app.metadataCache.getFileCache(file)?.frontmatter;
+        const fm = fileFrontmatter(file);
         const timestamp = file.stat?.mtime ?? 0;
         for (const link of asArray(fm?.contexts)) record(link, file, timestamp);
         for (const side of ["debit", "credit"]) {
@@ -189,8 +192,7 @@ const uniqueLogPath = (date, title, currentFile) => {
     return path.replace(/\.md$/, "");
 };
 
-const currentFrontmatter = tp =>
-    app.metadataCache.getFileCache(tp.config.target_file)?.frontmatter ?? {};
+const currentFrontmatter = tp => fileFrontmatter(tp.config.target_file);
 
 const currentPostingAccount = (finance, side) =>
     asArray(finance?.postings?.[side])[0]?.account ?? null;
@@ -216,7 +218,7 @@ const writeFinanceLog = async (tp, data) => {
 
     if (relatedFile && (data.tag === "finance/statement/order" || data.tag === "finance/statement/dividend")) {
         for (let attempt = 0; attempt < 10; attempt += 1) {
-            const indexedFinance = app.metadataCache.getFileCache(file)?.frontmatter?.finance;
+            const indexedFinance = fileFrontmatter(file).finance;
             if (indexedFinance?.date === data.finance.date && indexedFinance?.amount === data.finance.amount) break;
             await new Promise(resolve => window.setTimeout(resolve, 100));
         }

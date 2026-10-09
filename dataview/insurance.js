@@ -45,7 +45,7 @@ let entries = dv
             cost: cost,
             costPer: costPer,
             costPerMonth: (cost && costPer) ? (cost / costPer) : null,
-            costPaymentAccountId: getFirstAccountId(p['cost_paymentmethods']),
+            costPaymentAccountId: getFirstAccountId(p['paymentmethods']),
             notes: p['notes'],
             owners: p['owners'],
             id: p['account_id'],

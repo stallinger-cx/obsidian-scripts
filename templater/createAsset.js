@@ -2,6 +2,14 @@ const asArray = value => value == null ? [] : (Array.isArray(value) ? value : [v
 
 const normalizeTag = tag => String(tag ?? "").replace(/^#/, "");
 
+const fileFrontmatter = file =>
+    app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+
+const hasTag = (file, wanted) => asArray(fileFrontmatter(file).tags).some(tag => {
+    const normalized = normalizeTag(tag);
+    return normalized === wanted || normalized.startsWith(`${wanted}/`);
+});
+
 const clean = value => {
     const result = String(value ?? "").trim();
     return result === "" ? null : result;
@@ -55,11 +63,11 @@ const chooseExchange = async (tp, currentValue) => {
     const current = clean(currentValue);
     const currentTarget = linkTarget(current);
     const options = app.vault.getMarkdownFiles()
-        .filter(file => asArray(app.metadataCache.getFileCache(file)?.frontmatter?.tags)
+        .filter(file => asArray(fileFrontmatter(file).tags)
             .map(normalizeTag)
             .includes("finance/market/venue"))
         .map(file => {
-            const fm = app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+            const fm = fileFrontmatter(file);
             return {
                 file,
                 code: fm.venue?.code ?? file.basename,
@@ -103,14 +111,14 @@ const uniqueNotePath = (type, name, currentFile) => {
     return path.replace(/\.md$/, "");
 };
 
-const linkTarget = link => String(link ?? "")
+const linkTarget = link => String(link?.path ?? link ?? "")
     .replace(/^\[\[/, "")
     .replace(/\]\]$/, "")
     .split("|")[0];
 
 const chooseGicsSector = async (tp, currentValue) => {
     const files = app.vault.getMarkdownFiles()
-        .filter(file => asArray(app.metadataCache.getFileCache(file)?.frontmatter?.tags)
+        .filter(file => asArray(fileFrontmatter(file).tags)
             .map(normalizeTag)
             .includes("finance/gics/sector"))
         .sort((a, b) => a.basename.localeCompare(b.basename, "en"));
@@ -119,12 +127,12 @@ const chooseGicsSector = async (tp, currentValue) => {
     files.sort((a, b) => Number(b.basename === currentTarget) - Number(a.basename === currentTarget));
 
     const labels = ["— No GICS sector —", ...files.map(file => {
-        const fm = app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+        const fm = fileFrontmatter(file);
         const name = asArray(fm.aliases)[0] ?? file.basename;
         return `${name} (${fm.gics?.code ?? "—"})`;
     })];
     const values = [null, ...files.map(file => {
-        const name = asArray(app.metadataCache.getFileCache(file)?.frontmatter?.aliases)[0] ?? file.basename;
+        const name = asArray(fileFrontmatter(file).aliases)[0] ?? file.basename;
         return `[[${file.basename}|${name}]]`;
     })];
 
@@ -146,7 +154,7 @@ module.exports = async (tp, typeName) => {
     if (!type) throw new Error(`Unknown asset type: ${typeName}`);
 
     const file = tp.config.target_file;
-    const fm = app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+    const fm = fileFrontmatter(file);
     const asset = fm.asset ?? {};
     const currentAlias = asArray(fm.aliases).find(value => clean(value));
     const currentName = currentAlias ?? assetNameFromTitle(tp.file.title, type.prefix);
@@ -178,7 +186,7 @@ module.exports = async (tp, typeName) => {
             .filter(tag => !otherAssetTags.includes(tag));
         tags.push(type.tag);
 
-        const nextAsset = { ...asset };
+        const nextAsset = { ...(frontmatter.asset ?? {}) };
         for (const key of ["isin", "cusip", "ticker", "exchange", "gics", "coingecko_id"]) {
             if (!(key in values) || values[key] == null) delete nextAsset[key];
             else nextAsset[key] = values[key];

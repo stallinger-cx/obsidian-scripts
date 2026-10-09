@@ -1,43 +1,53 @@
-module.exports = (fm) => 
+const FRONTMATTER_ORDER = [
+    "id",
+    "scopes",
+    "created",
+    "updated",
+    "updated_count",
+    "viewed",
+    "tags",
+    "aliases",
+    "organizations",
+    "contexts",
+    "tenants",
+    "domains",
+    "emails",
+    "phones",
+    "addresses",
+    "logins",
+    "connections",
+    "owners",
+    "usernames",
+    "dns",
+    "started",
+    "status",
+    "asset",
+    "finance",
+    "see",
+    "is-reference" // everything below this are unsorted/old/unmanaged properties
+];
+
+const hasOwn = (object, key) =>
+    Object.prototype.hasOwnProperty.call(object, key);
+
+const replaceObjectContents = (target, source) => {
+    for (const key of Object.keys(target)) delete target[key];
+    Object.assign(target, source);
+};
+
+module.exports = (fm) =>
 {
-    const order = [
-        "id",
-        "scopes",
-        "created",
-        "updated",
-        "tags",
-        "aliases",
-        "organizations",
-        "contexts",
-        "tenants",
-        "domains",
-        "emails",
-        "phones",
-        "addresses",
-        "logins",
-        "connections",
-        "owners",
-        "usernames",
-        "dns",
-        "started",
-        "status",
-        "asset",
-        "finance",
-        "see",
-        "is-reference" // everything below this are unsorted/old/unmanaged properties
-    ];
     const reordered = {};
     // Set order for known properties
-    for (const key of order) {
-        if (key in fm) {
+    for (const key of FRONTMATTER_ORDER) {
+        if (hasOwn(fm, key)) {
             reordered[key] = fm[key];
         }
     }
     // other properties at end
     for (const key of Object.keys(fm)) {
-        if (key in reordered) continue;
+        if (hasOwn(reordered, key)) continue;
         reordered[key] = fm[key];
     }
-    Object.keys(fm).forEach(key => delete fm[key]);
-    Object.assign(fm, reordered);
+    replaceObjectContents(fm, reordered);
 };

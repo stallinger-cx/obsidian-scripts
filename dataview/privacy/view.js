@@ -2,11 +2,16 @@
 // We use the input object passed from the calling note
 const targetPath = input?.target?.path;
 if (!targetPath) {
-    dv.paragraph("⚠️ No target link provided to view.");
+    dv.paragraph("⚠️ No target link provided to view");
+    return;
+}
+const privatePath = input?.privatePath;
+if (!privatePath) {
+    dv.paragraph("⚠️ Private path not specified");
     return;
 }
 // Fetch all notes from the private directory that contain the 'privacy_backlink' field
-const privateNotes = dv.pages('"notes/private"').where(p => p.privacy_backlink);
+const privateNotes = dv.pages(`"notes/${privatePath}"`).where(p => p.privacy_backlink);
 // Filter the notes where the backlink matches the current public note
 const linkedNotes = privateNotes.filter(p => {
     // Normalize to an array to handle both single links and lists of links

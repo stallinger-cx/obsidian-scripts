@@ -1,5 +1,5 @@
 // scripts/moveToFolder.js
-// ToDo: Race-Conditions (Umbenennung vor der Ausführung) noch verhindern: https://claude.ai/share/d69c298b-cf11-4829-ab8b-069b7cabcb23
+// ToDo: Race-Conditions (Umbenennung vor der AusfÃ¼hrung) noch verhindern: https://claude.ai/share/d69c298b-cf11-4829-ab8b-069b7cabcb23
 async function moveToFolder(tp, folders, folderTexts) {
     if (!folderTexts) { folderTexts = folders; }
     // Filter existing
